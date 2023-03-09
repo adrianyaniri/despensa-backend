@@ -9,7 +9,7 @@ import { ProjectModule } from './modules/project/project.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: '.develop.env',
     }),
     TypeOrmModule.forRoot({ ...DataSourceConfig }),
     UsersModule,

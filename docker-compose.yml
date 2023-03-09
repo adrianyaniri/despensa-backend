@@ -6,7 +6,7 @@ services:
     container_name: despensa_pg
     restart: always
     env_file:
-     - .env
+     - .develop.env
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       #- ./db/data/postgres:/var/lib/postgresql/data

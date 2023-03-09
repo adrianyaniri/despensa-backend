@@ -3,7 +3,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 ConfigModule.forRoot({
-  envFilePath: `.env`,
+  envFilePath: `.${process.env.NODE_ENV}.env`,
 });
 
 const configService = new ConfigService();
