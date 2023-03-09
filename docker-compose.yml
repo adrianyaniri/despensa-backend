@@ -5,12 +5,10 @@ services:
     image: postgres:9.6
     container_name: despensa_pg
     restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+     - .env
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./db/data/postgres:/var/lib/postgresql/data
+      #- ./db/data/postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
