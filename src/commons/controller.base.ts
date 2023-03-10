@@ -6,14 +6,13 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  Patch,
   Post,
 } from '@nestjs/common';
 
 export class ControllerBase<T> {
   constructor(private readonly baseService: BaseService<T>) {}
 
-  @Post()
+  @Post('register')
   async create(@Body() body: T) {
     try {
       const createEntity = this.baseService.create(body);
@@ -26,7 +25,7 @@ export class ControllerBase<T> {
     }
   }
 
-  @Get()
+  @Get('all')
   async findAll() {
     try {
       const entities = await this.baseService.findAll();

@@ -1,23 +1,31 @@
-import { BaseEntity, DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { ErrorManager } from '../utils/error.manager';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export abstract class BaseService<T> {
-  constructor(private readonly repository: Repository<T>) {}
+  protected constructor(private readonly repository: Repository<T>) {}
 
   async create(entity: T): Promise<T> {
     try {
       return await this.repository.save(entity);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      new ErrorManager.CreateSignatureError(error.message);
     }
   }
 
   async findAll(): Promise<T[]> {
     try {
-      return await this.repository.find();
+      const data: T[] = await this.repository.find();
+      if (data.length === 0) {
+        new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'No data found',
+        });
+      }
+      return data;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      new ErrorManager.CreateSignatureError(error.message);
     }
   }
 
@@ -28,27 +36,31 @@ export abstract class BaseService<T> {
         .where({ id })
         .getOne();
       if (!entity) {
-        throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+        new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'Entity not found',
+        });
       }
       return entity;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      new ErrorManager.CreateSignatureError(error.message);
     }
   }
 
-  async updateById(
-    id: string,
-    dto: T,
-    entity: typeof BaseEntity,
-  ): Promise<UpdateResult | undefined> {
+  async updateById(id: string, body: T): Promise<UpdateResult | undefined> {
     try {
-      const result = await entity.update(id, dto);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const result = await this.repository.update(id, { ...body });
       if (result.affected !== 0) {
-        throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+        new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'Entity not found',
+        });
       }
       return result;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      new ErrorManager.CreateSignatureError(error.message);
     }
   }
 
@@ -56,8 +68,12 @@ export abstract class BaseService<T> {
     try {
       const data: DeleteResult = await this.repository.delete(id);
       if (data.affected === 0) {
-        return data;
+        new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'Delete failed',
+        });
       }
+      return data;
     } catch (e) {
       throw new Error(e);
     }

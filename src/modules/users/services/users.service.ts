@@ -2,14 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { UserUpdatedDto, UserDto } from '../dto/user.dto';
+import { UserUpdatedDto, UserDto, UserToProjectDto } from '../dto/user.dto';
 import { ErrorManager } from '../../../utils/error.manager';
+import { UserProjectsEntity } from '../entities/userProjects.entity';
+import { convertToUserProjectEntity } from '../../../utils/convertToUserProjectEntity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
+    @InjectRepository(UserProjectsEntity)
+    private readonly userProjectsRepository: Repository<UserProjectsEntity>,
   ) {}
 
   public async createUsers(body: UserDto): Promise<UserEntity> {
@@ -31,7 +35,7 @@ export class UsersService {
       }
       return users;
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      new ErrorManager.CreateSignatureError(error.message);
     }
   }
 
@@ -49,7 +53,7 @@ export class UsersService {
       }
       return user;
     } catch (error) {
-      new ErrorManager.createSignatureError(error.message);
+      new ErrorManager.CreateSignatureError(error.message);
     }
   }
 
@@ -67,7 +71,7 @@ export class UsersService {
       }
       return user;
     } catch (error) {
-      new ErrorManager.createSignatureError(error.message);
+      new ErrorManager.CreateSignatureError(error.message);
     }
   }
 
@@ -82,7 +86,15 @@ export class UsersService {
       }
       return user;
     } catch (error) {
-      new ErrorManager.createSignatureError(error.message);
+      new ErrorManager.CreateSignatureError(error.message);
+    }
+  }
+
+  public async relationToProject(body: UserToProjectDto) {
+    try {
+      return await this.userProjectsRepository.save({ ...body });
+    } catch (error) {
+      throw new ErrorManager.CreateSignatureError(error.message);
     }
   }
 }

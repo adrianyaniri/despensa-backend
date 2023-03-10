@@ -1,7 +1,7 @@
 import { IUser } from '../../../interface/user.interfaces';
 import { BaseEntity } from '../../../config/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
-import { ROLES } from '../../../constants/ROLES';
+import { ROLES } from '../../../constants';
 import { UserProjectsEntity } from './userProjects.entity';
 
 @Entity('users')
@@ -23,6 +23,9 @@ export class UserEntity extends BaseEntity implements IUser {
   role: ROLES;
   @Column({ unique: true })
   username: string;
+
+  @Column({ default: false })
+  isDeleted: boolean;
 
   @OneToMany(() => UserProjectsEntity, (userProject) => userProject.user)
   projectsIncludes: UserProjectsEntity[];
