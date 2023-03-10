@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UserUpdatedDto, UserDto } from '../dto/user.dto';
+import { ErrorManager } from '../../../utils/error.manager';
 
 @Injectable()
 export class UsersService {
@@ -21,20 +22,34 @@ export class UsersService {
 
   public async findUsers(): Promise<UserEntity[]> {
     try {
-      return await this.usersRepository.find();
+      const users: UserEntity[] = await this.usersRepository.find();
+      if (users.length === 0) {
+        new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'No users found',
+        });
+      }
+      return users;
     } catch (error) {
-      throw new Error(error);
+      throw new ErrorManager.createSignatureError(error.message);
     }
   }
 
   public async findUserById(id: string): Promise<UserEntity> {
     try {
-      return await this.usersRepository
+      const user: UserEntity = await this.usersRepository
         .createQueryBuilder('user')
         .where({ id })
         .getOne();
+      if (!user) {
+        new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'User not found',
+        });
+      }
+      return user;
     } catch (error) {
-      throw new Error(error);
+      new ErrorManager.createSignatureError(error.message);
     }
   }
 
@@ -45,11 +60,14 @@ export class UsersService {
     try {
       const user: UpdateResult = await this.usersRepository.update(id, body);
       if (user.affected === 0) {
-        return undefined;
+        new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'Update failed',
+        });
       }
       return user;
     } catch (error) {
-      throw new Error(error);
+      new ErrorManager.createSignatureError(error.message);
     }
   }
 
@@ -57,11 +75,14 @@ export class UsersService {
     try {
       const user: DeleteResult = await this.usersRepository.delete(id);
       if (user.affected === 0) {
-        return undefined;
+        new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'Delete failed',
+        });
       }
       return user;
     } catch (error) {
-      throw new Error(error);
+      new ErrorManager.createSignatureError(error.message);
     }
   }
 }
