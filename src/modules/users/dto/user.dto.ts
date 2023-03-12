@@ -69,7 +69,7 @@ export class UserUpdatedDto {
   })
   password: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
   fechaNacimiento: string;
 

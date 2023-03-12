@@ -32,6 +32,23 @@ export class ProjectService extends BaseService<ProjectsEntity> {
     }
   }
 
+  async findOneById(id: string): Promise<ProjectsEntity> {
+    try {
+      const project = await this.projectRepository
+        .createQueryBuilder('project')
+        .where({ id })
+        .leftJoinAndSelect('project.usersIncludes', 'usersIncludes')
+        .leftJoinAndSelect('usersIncludes.user', 'user')
+        .getOne();
+      if (!project) {
+        throw new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: `Project by id ${id}not found in database or deleted`,
+        });
+      }
+      return project;
+    } catch (error) {}
+  }
   getEntityName(): string {
     return 'ProjectEntity';
   }

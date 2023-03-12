@@ -50,6 +50,8 @@ export class UsersService {
       const user: UserEntity = await this.usersRepository
         .createQueryBuilder('user')
         .where({ id })
+        .leftJoinAndSelect('user.projectsIncludes', 'projectsIncludes')
+        .leftJoinAndSelect('projectsIncludes.project', 'project')
         .getOne();
       if (!user) {
         new ErrorManager({
@@ -99,6 +101,7 @@ export class UsersService {
   public async relationToProject(body: UserToProjectDto) {
     try {
       return await this.userProjectsRepository.save({ ...body });
+      console.log(body);
     } catch (error) {
       throw new ErrorManager.CreateSignatureError(error.message);
     }
