@@ -1,40 +1,47 @@
 import { ROLES } from '../../../constants';
 import {
+  IsDateString,
+  IsEmail,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   IsUUID,
+  Matches,
+  MinLength,
 } from 'class-validator';
 import { UserEntity } from '../entities/user.entity';
 import { ACCESS_LEVELS } from '../../../constants/ROLES';
-import { ProjectsEntity } from '../../project/entities/projects.entity';
+import { ProjectsEntity } from '../../projects/entities/projects.entity';
 
 export class UserDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  firstName: string;
+  firstName = 'name';
 
   @IsNotEmpty()
   @IsString()
   lastName: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsEmail()
   email: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @Matches(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/, {
+    message: 'Password must contain at least one letter and one number',
+  })
   password: string;
 
+  @IsDateString()
   @IsNotEmpty()
-  @IsNumber()
-  age: number;
+  fechaNacimiento: string;
 
   @IsNotEmpty()
   @IsString()
-  username: string;
+  userName: string;
 
   @IsNotEmpty()
   @IsEnum(ROLES)
@@ -51,20 +58,24 @@ export class UserUpdatedDto {
   lastName: string;
 
   @IsOptional()
-  @IsString()
+  @IsEmail()
   email: string;
 
   @IsOptional()
   @IsString()
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @Matches(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/, {
+    message: 'Password must contain at least one letter and one number',
+  })
   password: string;
 
-  @IsOptional()
-  @IsNumber()
-  age: number;
+  @IsNotEmpty()
+  @IsDateString()
+  fechaNacimiento: string;
 
   @IsOptional()
   @IsString()
-  username: string;
+  userName: string;
 
   @IsOptional()
   @IsEnum(ROLES)
@@ -81,6 +92,6 @@ export class UserToProjectDto {
   projectId: ProjectsEntity;
 
   @IsNotEmpty()
-  @IsEnum(ACCESS_LEVELS)
+  @IsEnum(ACCESS_LEVELS, { message: 'Access level is not valid' })
   accessLevel: ACCESS_LEVELS;
 }

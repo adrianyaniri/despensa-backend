@@ -54,25 +54,7 @@ export class ControllerBase<T> {
     }
   }
 
-  /*
-  @Patch(':id')
-  async updateById(@Param('id') id: string, @Body() body: T) {
-    try {
-      const entity = await this.baseService.updateById(id, body);
-      if (!entity) {
-        throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
-      }
-      return {
-        statusCode: HttpStatus.OK,
-        data: entity,
-      };
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-  */
-
-  @Delete(':id')
+  @Delete('/:id')
   async delete(@Param('id') id: string) {
     try {
       const data = await this.baseService.delete(id);

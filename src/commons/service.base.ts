@@ -1,4 +1,4 @@
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository,} from 'typeorm';
 import { ErrorManager } from '../utils/error.manager';
 import { Injectable } from '@nestjs/common';
 
@@ -42,23 +42,6 @@ export abstract class BaseService<T> {
         });
       }
       return entity;
-    } catch (error) {
-      new ErrorManager.CreateSignatureError(error.message);
-    }
-  }
-
-  async updateById(id: string, body: T): Promise<UpdateResult | undefined> {
-    try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const result = await this.repository.update(id, { ...body });
-      if (result.affected !== 0) {
-        new ErrorManager({
-          type: 'BAD_REQUEST',
-          message: 'Entity not found',
-        });
-      }
-      return result;
     } catch (error) {
       new ErrorManager.CreateSignatureError(error.message);
     }

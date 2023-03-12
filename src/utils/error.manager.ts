@@ -10,9 +10,9 @@ export class ErrorManager extends Error {
   }) {
     super(`${type}:: ${message}`);
   }
-  public static createSignatureError(message: string) {
+  public static CreateSignatureError(message: string) {
     const name = message.split('::')[0];
-    if (name){
+    if (name) {
       throw new HttpException(message, HttpStatus[name]);
     } else {
       throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);

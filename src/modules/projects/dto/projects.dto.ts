@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class ProjectsDto {
   @IsNotEmpty()
@@ -7,6 +7,7 @@ export class ProjectsDto {
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(10, { message: 'Description is too short' })
   description: string;
 }
 

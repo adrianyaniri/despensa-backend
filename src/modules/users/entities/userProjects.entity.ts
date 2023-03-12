@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../../config/base.entity';
 import { ACCESS_LEVELS } from '../../../constants/ROLES';
-import { ProjectsEntity } from '../../project/entities/projects.entity';
+import { ProjectsEntity } from '../../projects/entities/projects.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('user_projects')

@@ -5,7 +5,7 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UserUpdatedDto, UserDto, UserToProjectDto } from '../dto/user.dto';
 import { ErrorManager } from '../../../utils/error.manager';
 import { UserProjectsEntity } from '../entities/userProjects.entity';
-import { convertToUserProjectEntity } from '../../../utils/convertToUserProjectEntity';
+import { AgeService } from './ageService';
 
 @Injectable()
 export class UsersService {
@@ -14,11 +14,17 @@ export class UsersService {
     private readonly usersRepository: Repository<UserEntity>,
     @InjectRepository(UserProjectsEntity)
     private readonly userProjectsRepository: Repository<UserProjectsEntity>,
+    private readonly ageService: AgeService,
   ) {}
 
   public async createUsers(body: UserDto): Promise<UserEntity> {
     try {
-      return await this.usersRepository.save(body);
+      const user = await this.usersRepository.create({
+        ...body,
+        fechaNacimiento: new Date(body.fechaNacimiento),
+        edad: this.ageService.calculateAge(new Date(body.fechaNacimiento)),
+      });
+      return await this.usersRepository.save(user);
     } catch (error) {
       throw new Error(error);
     }
