@@ -13,6 +13,6 @@ import { AgeService } from './services/ageService';
   ],
   providers: [UsersService, AgeService],
   controllers: [UsersController],
-  exports: [UsersService, TypeOrmModule],
+  exports: [UsersService, AgeService, TypeOrmModule],
 })
 export class UsersModule {}

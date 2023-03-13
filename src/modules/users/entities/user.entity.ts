@@ -3,6 +3,7 @@ import { BaseEntity } from '../../../config/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { ROLES } from '../../../constants';
 import { UserProjectsEntity } from './userProjects.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('users')
 export class UserEntity extends BaseEntity implements IUser {
@@ -19,6 +20,7 @@ export class UserEntity extends BaseEntity implements IUser {
   lastName: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @Column({

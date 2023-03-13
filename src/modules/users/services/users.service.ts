@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { UserEntity } from '../entities/user.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { UserUpdatedDto, UserDto, UserToProjectDto } from '../dto/user.dto';
+import { UserDto, UserToProjectDto, UserUpdatedDto } from '../dto/user.dto';
 import { ErrorManager } from '../../../utils/error.manager';
 import { UserProjectsEntity } from '../entities/userProjects.entity';
 import { AgeService } from './ageService';
+import * as process from 'process';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +21,7 @@ export class UsersService {
 
   public async createUsers(body: UserDto): Promise<UserEntity> {
     try {
+      body.password = await bcrypt.hash(body.password, +process.env.HASH_SALT);
       const user = await this.usersRepository.create({
         ...body,
         fechaNacimiento: new Date(body.fechaNacimiento),
@@ -102,6 +105,18 @@ export class UsersService {
     try {
       return await this.userProjectsRepository.save({ ...body });
       console.log(body);
+    } catch (error) {
+      throw new ErrorManager.CreateSignatureError(error.message);
+    }
+  }
+
+  public async findBy({ key, value }: { key: keyof UserDto; value: any }) {
+    try {
+      return await this.usersRepository
+        .createQueryBuilder('user')
+        .addSelect('user.password')
+        .where({ [key]: value })
+        .getOne();
     } catch (error) {
       throw new ErrorManager.CreateSignatureError(error.message);
     }
