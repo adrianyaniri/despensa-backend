@@ -30,8 +30,6 @@ export class AuthService {
       const match = await bcrypt.compare(password, userByEmail.password);
       if (match) return userByEmail;
     }
-    console.log(userByUsername);
-    console.log(userByEmail);
     return null;
   }
 
@@ -50,10 +48,10 @@ export class AuthService {
 
   // Function para verifier la firma del token
   public async generateToken(user: UserEntity): Promise<any> {
-    const getUser = await this.usersService.findUserById(user.id.toString());
+    const getUser = await this.usersService.findUserById(user.id);
     const payload: PayloadToken = {
       role: getUser.role,
-      sub: getUser.id.toString(),
+      sub: getUser.id,
     };
     return {
       access_token: this.signToken({
@@ -61,6 +59,7 @@ export class AuthService {
         secret: process.env.JWT_SECRET,
         expires: '1h',
       }),
+      user,
     };
   }
 }

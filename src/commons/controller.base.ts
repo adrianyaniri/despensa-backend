@@ -7,11 +7,18 @@ import {
   HttpStatus,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-
+import { AuthGuard } from '../modules/auth/guards/auth.guard';
+import { PublicAccess } from '../modules/auth/decorators/publicAccess.decorator';
+import { Roles } from '../modules/auth/decorators/roles.decorator';
+import { AccessLevelGuard } from '../modules/auth/guards/access-level.guard';
+import { RolesGuard } from '../modules/auth/guards/roles.guard';
+@UseGuards(AuthGuard, RolesGuard, AccessLevelGuard)
 export class ControllerBase<T> {
   constructor(private readonly baseService: BaseService<T>) {}
 
+  @Roles('ADMIN')
   @Post('register')
   async create(@Body() body: T) {
     try {
@@ -25,6 +32,7 @@ export class ControllerBase<T> {
     }
   }
 
+  @PublicAccess()
   @Get('all')
   async findAll() {
     try {
@@ -37,7 +45,7 @@ export class ControllerBase<T> {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
+  @PublicAccess()
   @Get(':id')
   async findOneById(@Param('id') id: string) {
     try {
@@ -54,6 +62,7 @@ export class ControllerBase<T> {
     }
   }
 
+  @Roles('ADMIN')
   @Delete('/:id')
   async delete(@Param('id') id: string) {
     try {
