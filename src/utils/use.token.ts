@@ -1,4 +1,7 @@
-import { AuthTokenResult, IUseToken } from "../modules/auth/interface/auth.interface";
+import {
+  AuthTokenResult,
+  IUseToken,
+} from '../modules/auth/interface/auth.interface';
 import * as jwt from 'jsonwebtoken';
 
 export const useToken = (token: string): IUseToken | string => {
@@ -9,9 +12,9 @@ export const useToken = (token: string): IUseToken | string => {
     return {
       role: decodeToken.role,
       sub: decodeToken.sub,
-      isExpired: +expiredDate <= +currentDate / 100,
+      isExpired: +expiredDate <= +currentDate / 1000,
     };
   } catch (error) {
-    return 'Token is invalid';
+    return 'Token no valido';
   }
 };
