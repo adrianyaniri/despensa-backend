@@ -6,9 +6,10 @@ import { ProjectsUpdatedDto } from '../dto/projects.dto';
 import { AuthGuard } from '../../auth/guards/auth.guard';
 import { AccessLevelGuard } from '../../auth/guards/access-level.guard';
 import { AccessLevel } from '../../auth/decorators/access-level.decorator';
+import { RolesGuard } from '../../auth/guards/roles.guard';
 
 @Controller('projects')
-@UseGuards(AuthGuard, AccessLevelGuard)
+@UseGuards(AuthGuard, AccessLevelGuard, RolesGuard)
 export class ProjectController extends ControllerBase<ProjectsEntity> {
   constructor(private readonly projectService: ProjectService) {
     super(projectService);

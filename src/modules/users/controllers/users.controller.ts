@@ -14,7 +14,7 @@ import { UserDto, UserUpdatedDto } from '../dto/user.dto';
 import { AuthGuard } from '../../auth/guards/auth.guard';
 import { PublicAccess } from '../../auth/decorators/publicAccess.decorator';
 import { Roles } from '../../auth/decorators/roles.decorator';
-import { RolesGuard } from '../../auth/guards/roles.guard'
+import { RolesGuard } from '../../auth/guards/roles.guard';
 
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('users')
@@ -33,7 +33,7 @@ export class UsersController {
     return await this.usersService.relationToProject(body);
   }
 
-  @Roles('BASIC')
+  @Roles('ADMIN')
   @Get('all')
   public async getUsers() {
     return await this.usersService.findUsers();

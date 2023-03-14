@@ -4,11 +4,15 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { UsersService } from '../../users/services/users.service';
 import { Reflector } from '@nestjs/core';
-import { ROLES } from '../../../constants';
 import { Request } from 'express';
+import { Observable } from 'rxjs';
+import {
+  ADMIN_KEY,
+  PUBLIC_KEY,
+  ROLES_KEY,
+} from '../../../constants/key-decorator';
+import { ROLES } from '../../../constants';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -16,22 +20,26 @@ export class RolesGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
+    console.log('RolesGuard');
     const isPublic = this.reflector.get<boolean>(
-      'PUBLIC_KEY',
+      PUBLIC_KEY,
       context.getHandler(),
     );
 
-    if (isPublic) return true;
+    if (isPublic) {
+      return true;
+    }
 
     const roles = this.reflector.get<Array<keyof typeof ROLES>>(
-      'ROLES_KEY',
+      ROLES_KEY,
       context.getHandler(),
     );
 
-    const admin = this.reflector.get<string>('ADMIN_KEY', context.getHandler());
+    const admin = this.reflector.get<string>(ADMIN_KEY, context.getHandler());
 
-    const request = context.switchToHttp().getRequest<Request>();
-    const { roleUser } = request;
+    const req = context.switchToHttp().getRequest<Request>();
+
+    const { roleUser } = req;
 
     if (roles === undefined) {
       if (!admin) {
@@ -40,19 +48,19 @@ export class RolesGuard implements CanActivate {
         return true;
       } else {
         throw new UnauthorizedException(
-          'You do not have permission to access this resource',
+          'No tienes permisos para esta operacion',
         );
       }
     }
+
     if (roleUser === ROLES.ADMIN) {
       return true;
     }
 
     const isAuth = roles.some((role) => role === roleUser);
+
     if (!isAuth) {
-      throw new UnauthorizedException(
-        'You do not have permission to access this resource',
-      );
+      throw new UnauthorizedException('No tienes permisos para esta operacion');
     }
     return true;
   }

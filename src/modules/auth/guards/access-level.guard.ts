@@ -4,7 +4,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { PUBLIC_KEY, ROLES } from '../../../constants';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
@@ -25,11 +24,6 @@ export class AccessLevelGuard implements CanActivate {
     );
 
     if (isPublic) return true;
-
-    const roles = this.reflector.get<Array<keyof typeof ROLES>>(
-      ROLES_KEY,
-      context.getHandler(),
-    );
 
     const accessLevel = this.reflector.get<number>(
       'ACCESS_LEVEL_KEY',

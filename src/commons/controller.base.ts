@@ -18,6 +18,7 @@ import { RolesGuard } from '../modules/auth/guards/roles.guard';
 export class ControllerBase<T> {
   constructor(private readonly baseService: BaseService<T>) {}
 
+  @Roles('ADMIN')
   @Post('register')
   async create(@Body() body: T) {
     try {
@@ -31,7 +32,7 @@ export class ControllerBase<T> {
     }
   }
 
-  @Roles('BASIC')
+  @PublicAccess()
   @Get('all')
   async findAll() {
     try {
@@ -61,7 +62,7 @@ export class ControllerBase<T> {
     }
   }
 
-  @Roles('BASIC')
+  @Roles('ADMIN')
   @Delete('/:id')
   async delete(@Param('id') id: string) {
     try {
