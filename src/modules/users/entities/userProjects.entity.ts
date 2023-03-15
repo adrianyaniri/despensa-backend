@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../../config/base.entity';
-import { ACCESS_LEVELS } from '../../../constants/ROLES';
+import { ACCESS_LEVELS } from '../../../constants/roles';
 import { ProjectsEntity } from '../../projects/entities/projects.entity';
 import { UserEntity } from './user.entity';
 
