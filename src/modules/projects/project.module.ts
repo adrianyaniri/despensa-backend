@@ -10,10 +10,15 @@ import { AgeService } from '../users/services/ageService';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProjectsEntity, UserProjectsEntity, UserEntity]),
+    TypeOrmModule.forFeature([
+      ProjectsEntity,
+      UserProjectsEntity,
+      UserProjectsEntity,
+      UserEntity,
+    ]),
   ],
   providers: [ProjectService, UsersService, AgeService],
-  controllers: [ProjectController],
+  controllers: [ProjectController, UsersService],
   exports: [ProjectService, TypeOrmModule],
 })
 export class ProjectModule {}

@@ -2,8 +2,10 @@ export enum ROLES {
   ADMIN = 'ADMIN',
   BASIC = 'BASIC',
   CREATOR = 'CREATOR',
+  SUPER_ADMIN = 'SUPER_ADMIN',
 }
 export enum ACCESS_LEVELS {
   MANAGER = 40,
   DEVELOPER = 30,
+  OWNER = 50,
 }
