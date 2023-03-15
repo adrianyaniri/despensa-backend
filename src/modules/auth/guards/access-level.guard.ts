@@ -9,7 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { UsersService } from '../../users/services/users.service';
 import { ROLES_KEY } from '../../../constants/key-decorator';
-import { ACCESS_LEVELS } from '../../../constants/ROLES';
+import { ACCESS_LEVELS } from '../../../constants/roles';
 
 @Injectable()
 export class AccessLevelGuard implements CanActivate {

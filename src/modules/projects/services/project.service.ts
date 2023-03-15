@@ -7,7 +7,7 @@ import { Repository, UpdateResult } from 'typeorm';
 import { ErrorManager } from '../../../utils/error.manager';
 import { UserProjectsEntity } from '../../users/entities/userProjects.entity';
 import { UsersService } from '../../users/services/users.service';
-import { ACCESS_LEVELS } from '../../../constants/ROLES';
+import { ACCESS_LEVELS } from '../../../constants/roles';
 
 @Injectable()
 export class ProjectService extends BaseService<ProjectsEntity> {

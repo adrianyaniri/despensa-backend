@@ -11,7 +11,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { UserEntity } from '../entities/user.entity';
-import { ACCESS_LEVELS } from '../../../constants/ROLES';
+import { ACCESS_LEVELS } from '../../../constants/roles';
 import { ProjectsEntity } from '../../projects/entities/projects.entity';
 
 export class UserDto {
